@@ -16,6 +16,7 @@ router.use(authMiddleware());
 router.post('/wallets', wallets.create);
 router.get('/wallets', wallets.list);
 router.get('/wallets/:id', wallets.get);
+router.post('/wallets/:id/cards', cards.create);
 
 router.post('/cards', cards.create);
 router.get('/cards', cards.list);

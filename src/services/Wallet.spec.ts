@@ -1,5 +1,6 @@
 import WalletService from './Wallet';
-import Wallet, { Currencies } from '../entities/Wallet';
+import Wallet from '../entities/Wallet';
+import { Currencies } from '../entities/types';
 
 const mockUser = {
   id: '123',

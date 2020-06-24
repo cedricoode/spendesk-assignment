@@ -1,16 +1,12 @@
-import Wallet, { Currencies } from '../entities/Wallet';
+import Wallet from '../entities/Wallet';
 import WalletRepository from '../repositories/Wallet';
+import { Currencies, User } from '../entities/types';
 
 export interface WalletDto {
   currency: Currencies;
   balance: string;
   isMaster: boolean;
   companyId?: string;
-}
-
-interface User {
-  id: string;
-  company: string;
 }
 
 export class WalletService {

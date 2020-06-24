@@ -3,7 +3,7 @@ import { createLogger } from '../logger';
 import Joi from '@hapi/joi';
 import { InvalidRequestError } from './Errors';
 import WalletService from '../services/Wallet';
-import { Currencies } from '../entities/Wallet';
+import { Currencies } from '../entities/types';
 
 const logger = createLogger('WalletsController');
 

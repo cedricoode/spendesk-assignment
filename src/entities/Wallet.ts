@@ -1,17 +1,13 @@
-import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
-
-export enum Currencies {
-  EUR = 'EUR',
-  USD = 'USD',
-  GBP = 'GBP',
-}
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
+import Card from './Card';
+import { Currencies } from './types';
 
 @Entity('wallet')
 class Wallet {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ type: 'enum', enum: Currencies })
+  @Column({ type: 'enum', enum: Object.values(Currencies) })
   currency: Currencies;
 
   @Column('decimal', { precision: 16, scale: 2 })
@@ -22,6 +18,9 @@ class Wallet {
 
   @Column('bool', { name: 'is_master', default: false })
   isMaster: boolean;
+
+  @OneToMany(() => Card, (card) => card.wallet)
+  cards: Card[];
 }
 
 export default Wallet;
