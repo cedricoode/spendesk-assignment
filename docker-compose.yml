@@ -1,0 +1,17 @@
+version: '3.6'
+services:
+  api:
+    build: .
+    ports:
+      - 4000:4000
+    environment:
+      NODE_ENV: development
+      DB_HOST: db
+    depends_on:
+      - db
+  db:
+    image: postgres:12
+    environment:
+      POSTGRES_PASSWORD: password
+      POSTGRES_USER: nodejs
+      POSTGRES_DB: project

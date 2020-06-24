@@ -1,0 +1,7 @@
+{
+  "rootDir": ".",
+  "preset": "ts-jest",
+  "testEnvironment": "node",
+  "clearMocks": true,
+  "testPathIgnorePatterns": ["/configs/", "/node_modules/", "/build/"]
+}
