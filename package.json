@@ -4,8 +4,8 @@
   "description": "json file manipulation api",
   "main": "index.ts",
   "scripts": {
-    "test": "NODE_ENV=test && jest -c jest.config.json src",
-    "test:e2e": "NODE_ENV=test && jest -c jest.config.json e2e",
+    "test": "NODE_ENV=test && jest -c jest.config.json --rootDir src",
+    "test:e2e": "NODE_ENV=test && jest -c jest.config.json --rootDir e2e",
     "dev": "nodemon --config nodemon.json",
     "start": "ts-node src/index.ts",
     "build": "rimraf build && tsc && ncp public build/public "

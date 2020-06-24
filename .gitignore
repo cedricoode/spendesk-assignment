@@ -7,4 +7,5 @@ tmp/
 temp/
 *.pdf
 fixtures
-configs/config.prod.ts
+config/config.prod.ts
+coverage/

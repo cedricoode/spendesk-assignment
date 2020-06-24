@@ -5,7 +5,7 @@ import logger from './logger';
 import './database';
 
 process.on('uncaughtException', (err) => {
-  logger.error('unhandled application error', err);
+  logger.error('unhandled application error ', err);
   process.exit(1);
 });
 

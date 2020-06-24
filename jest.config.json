@@ -3,5 +3,5 @@
   "preset": "ts-jest",
   "testEnvironment": "node",
   "clearMocks": true,
-  "testPathIgnorePatterns": ["/configs/", "/node_modules/", "/build/"]
+  "testPathIgnorePatterns": ["/config/", "/node_modules/", "/build/"]
 }
