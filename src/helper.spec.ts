@@ -17,7 +17,7 @@ describe('helper', () => {
     });
   });
 
-  describe('helper', () => {
+  describe('currencyListToMap', () => {
     it('should convert the currency list to a map', () => {
       const input: FixerIOResponse = {
         success: true,
@@ -200,6 +200,13 @@ describe('helper', () => {
       for (let key in input.rates) {
         expect(output[key]).toEqual(input.rates[key]);
       }
+    });
+  });
+
+  describe('genExpireAt', () => {
+    it('shoudl return a date in the future', () => {
+      const expireAt = helper.genExpireAt();
+      expect(expireAt.getTime()).toBeGreaterThan(Date.now());
     });
   });
 });

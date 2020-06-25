@@ -9,7 +9,13 @@ import {
 import Dinero from 'dinero.js';
 import Card from './Card';
 import Balance from './Balance';
-import { Currencies, PaymentType, ICardWallet, Money } from './types';
+import {
+  Currencies,
+  PaymentType,
+  ICardWallet,
+  Money,
+  WalletOrCard,
+} from './types';
 
 @Entity('wallets')
 class Wallet implements ICardWallet {
@@ -75,6 +81,9 @@ class Wallet implements ICardWallet {
 
   isMasterWallet() {
     return this.isMaster;
+  }
+  isParent(child: WalletOrCard) {
+    return child instanceof Card && child.wallet.id === this.id;
   }
 }
 

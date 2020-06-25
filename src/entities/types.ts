@@ -44,4 +44,5 @@ export interface ICardWallet extends IBalance {
   type: PaymentType;
   isValid(): boolean;
   isMasterWallet(): boolean;
+  isParent(child: WalletOrCard): boolean;
 }

@@ -17,7 +17,7 @@ const TransferRequestSchema = Joi.object({
   amount: Joi.number()
     .integer()
     .min(0)
-    .max(2 ** 31 / 100)
+    .max(Math.floor(2 ** 31 / 100))
     .required(),
   // transferCurrency: Joi.string().valid('from', 'to').required(),
 });
@@ -38,7 +38,10 @@ class TransferController {
     try {
       const rslt = await this.transferService.create(user, value);
       ctx.status = 200;
-      ctx.body = dtoTransformer(rslt, TransferToDTO);
+      const body = dtoTransformer(rslt, TransferToDTO);
+      body.from = value.from;
+      body.to = value.to;
+      ctx.body = body;
     } catch (err) {
       if (
         /insufficient fund/.test(err.message) ||

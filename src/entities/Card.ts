@@ -9,7 +9,13 @@ import {
 import Dinero from 'dinero.js';
 import Wallet from './Wallet';
 import Balance from './Balance';
-import { Currencies, PaymentType, ICardWallet, Money } from './types';
+import {
+  Currencies,
+  PaymentType,
+  ICardWallet,
+  Money,
+  WalletOrCard,
+} from './types';
 
 @Entity('cards')
 class Card implements ICardWallet {
@@ -88,12 +94,15 @@ class Card implements ICardWallet {
     }
 
     // if expired, it is not valid
-    console.log(this.expireAt);
     if (new Date(this.expireAt).getTime() < Date.now()) {
       return false;
     }
 
     return true;
+  }
+
+  isParent(child: WalletOrCard) {
+    return false;
   }
 }
 

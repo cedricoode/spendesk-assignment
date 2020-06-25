@@ -12,7 +12,7 @@ const CreateWalletSchema = Joi.object({
   balance: Joi.number()
     .integer()
     .min(0)
-    .max(2 ** 31 / 100)
+    .max(Math.floor(2 ** 31 / 100))
     .required(),
   currency: Joi.string()
     .valid(...Object.values(Currencies))

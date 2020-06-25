@@ -1,7 +1,7 @@
 import { Server } from 'http';
 import { createConnection, Connection } from 'typeorm';
 import app from '../src/app';
-import Config from '../configs';
+import Config from 'config';
 
 export default class TestSetup {
   connection: Connection;
@@ -9,7 +9,7 @@ export default class TestSetup {
 
   async setup() {
     this.server = app.listen(3000, () => {});
-    this.connection = await createConnection(Config.typeorm.default);
+    this.connection = await createConnection(Config.get('typeorm.default'));
   }
 
   async teardown() {

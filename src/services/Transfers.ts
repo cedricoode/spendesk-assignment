@@ -33,13 +33,6 @@ class TransferService {
     this.currencyService = new CurrencyService();
   }
 
-  async getPaymentMethod(user: User, type: PaymentType, id: number) {
-    if (type === PaymentType.CARD) {
-      return this.cardRepo.findById(user.id, id);
-    } else {
-      return this.walletRepo.findById(user.company, id);
-    }
-  }
   async create(user: User, transferDto: TransferDto) {
     // check payer type
     let payer = await this.getPaymentMethod(
@@ -78,8 +71,8 @@ class TransferService {
 
     const { fromMoney, toMoney, fee } = await this.getTransferAmounts(
       transferDto.amount * 100,
-      payer.currency,
-      payee.currency
+      payer,
+      payee
     );
 
     // check amount
@@ -89,6 +82,14 @@ class TransferService {
 
     // transfer
     return this.performTransfer(payer, payee, fromMoney, toMoney, fee);
+  }
+
+  async getPaymentMethod(user: User, type: PaymentType, id: number) {
+    if (type === PaymentType.CARD) {
+      return this.cardRepo.findById(user.id, id);
+    } else {
+      return this.walletRepo.findById(user.company, id);
+    }
   }
 
   async getTransferMasterWallet(payer: WalletOrCard, payee: WalletOrCard) {
@@ -130,25 +131,32 @@ class TransferService {
 
   async getTransferAmounts(
     amount: number,
-    fromCurrency: Currencies,
-    toCurrency: Currencies
+    payer: WalletOrCard,
+    payee: WalletOrCard
   ) {
     const fromMoney = Dinero({
       amount: amount,
-      currency: fromCurrency,
+      currency: payer.currency,
     });
 
     // conversion
-    let toMoney = await this.currencyService.convert(fromMoney, toCurrency);
+    let toMoney = await this.currencyService.convert(fromMoney, payee.currency);
+    const fee = this.calculateTransferFee(payer, payee, toMoney);
 
     // calculate fee
-    const fee = toMoney.multiply(FeeRate); // toAmount * FeeRate;
+    // if payee is a card of payer do not calculate the fee
     toMoney = toMoney.subtract(fee);
     return {
       fromMoney,
       toMoney,
       fee,
     };
+  }
+
+  calculateTransferFee(payer: WalletOrCard, payee: WalletOrCard, money: Money) {
+    return payer.isParent(payee) || payee.isParent(payer)
+      ? money.multiply(0)
+      : money.multiply(FeeRate);
   }
 }
 
