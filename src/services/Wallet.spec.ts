@@ -1,6 +1,7 @@
 import WalletService from './Wallet';
 import Wallet from '../entities/Wallet';
 import { Currencies } from '../entities/types';
+import Balance from '../entities/Balance';
 
 const mockUser = {
   id: '123',
@@ -12,8 +13,12 @@ const mockWalletDto = {
   isMaster: false,
 };
 const mockWallet = new Wallet();
-mockWallet.balance = '100';
-mockWallet.currency = Currencies.EUR;
+const balance = new Balance();
+balance.amount = '100';
+balance.currency = Currencies.EUR;
+// mockWallet.balance = '100';
+// mockWallet.currency = Currencies.EUR;
+mockWallet.balance = balance;
 mockWallet.isMaster = false;
 mockWallet.id = 12;
 mockWallet.companyId = mockUser.company;
@@ -43,9 +48,8 @@ describe('WalletService', () => {
       const wallet = await walletService.createWallet(mockUser, mockWalletDto);
       expect(wallet).toBeInstanceOf(Wallet);
       expect(wallet.companyId).toBe(mockUser.company);
-      expect(wallet.currency).toBe(mockWalletDto.currency);
       expect(wallet.isMaster).toBe(mockWalletDto.isMaster);
-      expect(wallet.balance).toBe(mockWalletDto.balance);
+      expect(wallet.balance).toEqual(balance);
     });
   });
   describe('getCompanyWallets', () => {

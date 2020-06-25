@@ -3,6 +3,7 @@ import Wallet from '../entities/Wallet';
 import Card from '../entities/Card';
 import { Currencies } from '../entities/types';
 import CardFactory from '../entities/CardFactory';
+import Balance from '../entities/Balance';
 jest.mock('../repositories/Cards', () => {
   class CardRepo {}
 
@@ -15,8 +16,10 @@ const mockUser = {
 };
 const mockIdNotExist = 1000;
 const mockWallet = new Wallet();
-mockWallet.balance = '100';
-mockWallet.currency = Currencies.EUR;
+const balance = new Balance();
+balance.amount = '100';
+balance.currency = Currencies.EUR;
+mockWallet.balance = balance;
 mockWallet.isMaster = false;
 mockWallet.id = 12;
 mockWallet.companyId = mockUser.company;

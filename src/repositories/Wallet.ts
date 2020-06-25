@@ -1,4 +1,4 @@
-import { getRepository, Repository } from 'typeorm';
+import { getRepository, Repository, createQueryBuilder } from 'typeorm';
 import Wallet from '../entities/Wallet';
 import { createLogger } from '../logger';
 
@@ -25,12 +25,29 @@ class WalletRepository {
   }
 
   findByCompanyId(company: string) {
-    return this.walletRepo.find({ where: { companyId: company } });
+    return this.walletRepo.find({
+      relations: ['balance'],
+      where: { companyId: company },
+    });
   }
 
   findById(companyId: string, id: number) {
     return this.walletRepo
-      .find({ where: { companyId, id } })
+      .find({
+        relations: ['balance'],
+        where: { companyId, id },
+      })
+      .then((wallets) => (wallets.length > 0 ? wallets[0] : null));
+  }
+
+  findMasterWallet(currency: string) {
+    this.walletRepo.createQueryBuilder('wallet');
+    return this.walletRepo
+      .find({
+        relations: ['balance'],
+        where: { isMaster: true },
+      })
+      .then((wallets) => wallets.filter((w) => w.currency === currency))
       .then((wallets) => (wallets.length > 0 ? wallets[0] : null));
   }
 }

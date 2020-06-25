@@ -61,3 +61,15 @@ export function genRandomCvc() {
   }
   return rslt.slice(0, 3).join('');
 }
+
+export function currencyListToMap(currencies: {
+  base: string;
+  rates: { [key: string]: number };
+}) {
+  const ans: { [key: string]: number } = {};
+  ans[currencies.base] = 1;
+  for (let c in currencies.rates) {
+    ans[c] = currencies.rates[c];
+  }
+  return ans;
+}

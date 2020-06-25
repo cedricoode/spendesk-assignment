@@ -28,4 +28,7 @@ export default {
   app: {
     port: 4000,
   },
+  spendesk: {
+    transferFeeRate: 0.029,
+  },
 };

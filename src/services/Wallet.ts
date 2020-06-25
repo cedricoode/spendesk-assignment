@@ -1,6 +1,7 @@
 import Wallet from '../entities/Wallet';
 import WalletRepository from '../repositories/Wallet';
 import { Currencies, User } from '../entities/types';
+import Balance from '../entities/Balance';
 
 export interface WalletDto {
   currency: Currencies;
@@ -17,9 +18,12 @@ export class WalletService {
   }
   createWallet(user: User, walletDto: WalletDto) {
     const wallet = new Wallet();
-    wallet.currency = walletDto.currency;
+    // wallet.currency = walletDto.currency;
+    const balance = new Balance();
+    balance.currency = walletDto.currency;
+    balance.amount = walletDto.balance;
     wallet.companyId = user.company;
-    wallet.balance = walletDto.balance;
+    wallet.balance = balance;
     wallet.isMaster = walletDto.isMaster;
 
     return this.walletRepo.create(wallet);
