@@ -2,7 +2,9 @@ import got from 'got';
 import config from 'config';
 import * as helper from '../helper';
 import { FixerIOResponse } from '../entities/types';
+import { createLogger } from '../logger';
 
+const logger = createLogger('CurrencyExchangeRepository');
 const Fixed = {
   success: true,
   timestamp: 1593016565,
@@ -179,24 +181,46 @@ const Fixed = {
     ZWL: 362.931299,
   },
 };
-class CurrencyExtrangeRepository {
+
+let cached: FixerIOResponse = null;
+class CurrencyExchangeRepository {
   constructor() {}
 
   async getCurrenies() {
-    if (Fixed) {
+    if (config.get('env') === 'test') {
+      // TODO: this should be moved to test mock file.. for the moment it's ok to use it
       return helper.currencyListToMap(Fixed);
     }
-    const rslt = await got(
-      `http://data.fixer.io/api/latest?access_key=${config.get(
-        'fixerio.accessKey'
-      )}`
-    ).json<FixerIOResponse>();
-
-    if (!rslt.success) {
-      return null;
+    // 1. check memory cache if more than two hours, rerequest.
+    let rslt;
+    if (
+      cached &&
+      new Date(cached.timestamp * 1000 + 120 * 3600 * 1000).getTime() >=
+        Date.now()
+    ) {
+      rslt = cached;
+    } else {
+      // cache is stale, rerequest
+      try {
+        logger.info('using memory cache');
+        cached = await got(
+          `http://data.fixer.io/api/latest?access_key=${config.get(
+            'fixerio.accessKey'
+          )}`
+        ).json<FixerIOResponse>();
+        rslt = cached;
+      } catch (err) {
+        logger.error(
+          'failed to get newest exchange rate, using potentially staled one'
+        );
+        logger.error(err);
+        // fall to use a potentially stale one
+        rslt = Fixed;
+      }
     }
+
     return helper.currencyListToMap(rslt);
   }
 }
 
-export default CurrencyExtrangeRepository;
+export default CurrencyExchangeRepository;

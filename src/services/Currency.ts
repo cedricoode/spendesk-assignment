@@ -1,10 +1,10 @@
-import CurrencyExtrangeRepository from '../repositories/CurrencyExchange';
+import CurrencyExchangeRepository from '../repositories/CurrencyExchange';
 import { Currencies, Money } from '../entities/types';
 
 class CurrencyService {
-  currencyRepo: CurrencyExtrangeRepository;
+  currencyRepo: CurrencyExchangeRepository;
   constructor() {
-    this.currencyRepo = new CurrencyExtrangeRepository();
+    this.currencyRepo = new CurrencyExchangeRepository();
   }
 
   async convert(fromMoney: Money, toCurrency: Currencies) {
