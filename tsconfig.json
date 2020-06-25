@@ -14,7 +14,9 @@
     "noImplicitAny": true,
     "typeRoots": ["./src/@types/**/*", "node_modules/@types"],
     "baseUrl": ".",
-    "paths": {}
+    "paths": {
+      "object-mapper": ["./src/@types/object-mapper/index.d.ts"]
+    }
   },
   "exclude": ["node_modules", "build"],
   "include": ["src/**/*", "@types"]

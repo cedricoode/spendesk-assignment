@@ -10,11 +10,9 @@ export class CardFactory {
     const balance = new Balance();
     balance.amount = 0;
     balance.currency = wallet.balance.currency;
-    // card.balance = '0';
     card.blocked = false;
-    // card.currency = wallet.currency;
     card.balance = balance;
-    card.expireAt = new Date();
+    card.expireAt = Helper.genExpireAt();
     card.userId = user.id;
     card.wallet = wallet;
     card.ccv = Helper.genRandomCvc();

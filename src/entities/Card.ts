@@ -16,7 +16,7 @@ class Card implements ICardWallet {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ length: 16, name: 'card_number' })
+  @Column({ length: 16, name: 'card_number', unique: true })
   cardNumber: string;
 
   @Column('date', { name: 'expire_at' })
@@ -88,7 +88,8 @@ class Card implements ICardWallet {
     }
 
     // if expired, it is not valid
-    if (this.expireAt < new Date()) {
+    console.log(this.expireAt);
+    if (new Date(this.expireAt).getTime() < Date.now()) {
       return false;
     }
 

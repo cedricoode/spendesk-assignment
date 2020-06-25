@@ -3,6 +3,7 @@ import Joi from '@hapi/joi';
 import { PaymentType } from '../entities/types';
 import { InvalidRequestError } from './Errors';
 import TransfersService from '../services/Transfers';
+import { dtoTransformer, TransferToDTO } from './Dtos';
 
 const TransferRequestSchema = Joi.object({
   from: Joi.number().min(0).integer().required(),
@@ -37,7 +38,7 @@ class TransferController {
     try {
       const rslt = await this.transferService.create(user, value);
       ctx.status = 200;
-      ctx.body = rslt;
+      ctx.body = dtoTransformer(rslt, TransferToDTO);
     } catch (err) {
       if (
         /insufficient fund/.test(err.message) ||

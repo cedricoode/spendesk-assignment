@@ -16,7 +16,7 @@ export class WalletService {
   constructor() {
     this.walletRepo = new WalletRepository();
   }
-  createWallet(user: User, walletDto: WalletDto) {
+  async createWallet(user: User, walletDto: WalletDto) {
     const wallet = new Wallet();
     const balance = new Balance();
     balance.currency = walletDto.currency;
@@ -24,6 +24,12 @@ export class WalletService {
     wallet.companyId = user.company;
     wallet.balance = balance;
     wallet.isMaster = walletDto.isMaster;
+    const masterWallet = await this.walletRepo.findMasterWallet(
+      wallet.currency
+    );
+    if (masterWallet) {
+      throw new Error(`master wallet(${wallet.currency}) already exists!`);
+    }
 
     return this.walletRepo.create(wallet);
   }

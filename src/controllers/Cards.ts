@@ -3,6 +3,7 @@ import CardsService from '../services/Cards';
 import logger from '../logger';
 import Joi from '@hapi/joi';
 import { InvalidRequestError } from './Errors';
+import { dtoTransformer, CardToDTO, dtoArrayTransformer } from './Dtos';
 
 class CardsController {
   cardsService: CardsService;
@@ -22,11 +23,10 @@ class CardsController {
     }
 
     const { user } = ctx.state;
-    console.log('request: ', walletId, user);
     try {
       const card = await this.cardsService.create(user, walletId);
       ctx.status = 200;
-      ctx.body = card;
+      ctx.body = dtoTransformer(card, CardToDTO);
     } catch (err) {
       logger.error('failed to create card');
       logger.error(err);
@@ -51,7 +51,7 @@ class CardsController {
       ctx.status = 404;
       return;
     }
-    ctx.body = card;
+    ctx.body = dtoTransformer(card, CardToDTO);
     ctx.status = 200;
   };
 
@@ -62,7 +62,7 @@ class CardsController {
       ctx.status = 404;
       return;
     }
-    ctx.body = cards;
+    ctx.body = dtoArrayTransformer(cards, CardToDTO);
     ctx.status = 200;
   };
 

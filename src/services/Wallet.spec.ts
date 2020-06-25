@@ -34,6 +34,9 @@ jest.mock('../repositories/Wallet', () => {
     findById(companyId: string, id: number) {
       return mockWallet;
     }
+    findMasterWallet(currency: string) {
+      return false;
+    }
   }
 
   return MockRepo;

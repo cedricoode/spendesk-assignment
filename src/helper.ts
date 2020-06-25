@@ -62,6 +62,15 @@ export function genRandomCvc() {
   return rslt.slice(0, 3).join('');
 }
 
+export function genExpireAt() {
+  const ans = new Date(new Date().getTime() + 365 * 24 * 3600 * 1000);
+  ans.setUTCHours(0);
+  ans.setUTCMinutes(0);
+  ans.setUTCSeconds(0);
+  ans.setUTCMilliseconds(0);
+  return ans;
+}
+
 export function currencyListToMap(currencies: {
   base: string;
   rates: { [key: string]: number };

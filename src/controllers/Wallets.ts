@@ -1,9 +1,10 @@
 import { Context } from 'koa';
-import { createLogger } from '../logger';
 import Joi from '@hapi/joi';
+import { createLogger } from '../logger';
 import { InvalidRequestError } from './Errors';
 import WalletService from '../services/Wallet';
 import { Currencies } from '../entities/types';
+import { dtoTransformer, WalletToDTO, dtoArrayTransformer } from './Dtos';
 
 const logger = createLogger('WalletsController');
 
@@ -39,13 +40,12 @@ class WalletsController {
     try {
       const rslt = await this.walletService.createWallet(user, value);
       ctx.status = 200;
-      ctx.body = rslt;
+      ctx.body = dtoTransformer(rslt, WalletToDTO);
     } catch (err) {
       logger.error('failed to create wallet');
       logger.error(err);
-      // TODO: check database errors numeric overflow
-
       ctx.status = 400;
+      ctx.body = err.message;
     }
   };
 
@@ -54,7 +54,7 @@ class WalletsController {
     try {
       const rslt = await this.walletService.getCompanyWallets(user.company);
       ctx.status = 200;
-      ctx.body = rslt;
+      ctx.body = dtoArrayTransformer(rslt, WalletToDTO);
     } catch (err) {
       ctx.status = 400;
       // handle error;
@@ -71,7 +71,7 @@ class WalletsController {
       return;
     }
     ctx.status = 200;
-    ctx.body = rslt;
+    ctx.body = dtoTransformer(rslt, WalletToDTO);
   };
 }
 export default new WalletsController();
