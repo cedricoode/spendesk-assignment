@@ -1,0 +1,417 @@
+openapi: "3.0.2"
+info:
+  title: Wallets management service
+  version: "1.0"
+servers:
+  - url: http://localhost:4000/api
+tags:
+  - name: Wallets
+    description: wallets apis
+  - name: Cards
+    description: cards apis
+paths:
+  /wallets:
+    parameters:
+      - in: header
+        required: true
+        name: User-Id
+        schema:
+          type: string
+        examples:
+          user:
+            description: example user
+            value: 123
+      - in: header
+        required: true
+        name: Company-Id
+        schema:
+          type: string
+        examples:
+          company:
+            description: example company id
+            value: 456
+    post:
+      tags:
+        - Wallets
+      summary: Add a wallet
+      operationId: addWallet
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Wallet"
+            examples:
+              wallet:
+                summary: a wallet payload
+                value:
+                  balance: "1000"
+                  currency: "GBP"
+                  isMaster: true
+        required: true
+      responses:
+        200:
+          description: wallet created
+        400:
+          description: failed to create wallet
+
+    get:
+      tags:
+        - Wallets
+      summary: get all wallet of current user's company's
+      operationId: getWallets
+      responses:
+        200:
+          description: wallets found
+
+  /wallets/{id}:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: number
+          format: integer
+        examples:
+          walletid:
+            value: 1
+        description: wallets id
+      - in: header
+        required: true
+        name: User-Id
+        schema:
+          type: string
+        examples:
+          user:
+            description: example user
+            value: 123
+      - in: header
+        required: true
+        name: Company-Id
+        schema:
+          type: string
+        examples:
+          company:
+            description: example company id
+            value: 456
+    get:
+      tags:
+        - Wallets
+      summary: get wallet by id
+      operationId: getWalletById
+      responses:
+        200:
+          description: wallet found
+        404:
+          description: wallet not found
+
+  /wallets/{id}/cards:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: number
+          format: integer
+        description: wallets id
+        examples:
+          walletid:
+            value: 1
+      - in: header
+        required: true
+        name: User-Id
+        schema:
+          type: string
+        examples:
+          user:
+            description: example user
+            value: 123
+      - in: header
+        required: true
+        name: Company-Id
+        schema:
+          type: string
+        examples:
+          company:
+            description: example company id
+            value: 456
+    post:
+      tags:
+        - Wallets
+      summary: create cards from a wallet
+      operationId: createCard
+      responses:
+        200:
+          description: card created
+          content:
+            application/json:
+              examples:
+                card:
+                  value:
+                    id: 11
+                    cardNumber: "4024007141420272"
+                    expiredAt: "2021-06-25T00:00:00.000Z"
+                    ccv: "982"
+                    userId: "123"
+                    blocked: false
+                    walletId: 5
+                    balance: 0
+                    currency: EUR
+
+  /cards:
+    parameters:
+      - in: header
+        required: true
+        name: User-Id
+        schema:
+          type: string
+        examples:
+          user:
+            description: example user
+            value: 123
+      - in: header
+        required: true
+        name: Company-Id
+        schema:
+          type: string
+        examples:
+          company:
+            description: example company id
+            value: 456
+    get:
+      tags:
+        - Cards
+      summary: get all cards of a user
+      operationId: getAllUserCards
+      responses:
+        200:
+          description: success
+          content:
+            application/json:
+              examples:
+                card:
+                  value:
+                    - id: 11
+                      cardNumber: "4024007141420272"
+                      expiredAt: "2021-06-25T00:00:00.000Z"
+                      ccv: "982"
+                      userId: "123"
+                      blocked: false
+                      walletId: 5
+                      balance: 0
+                      currency: EUR
+
+  /cards/{id}:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: number
+          format: integer
+        examples:
+          cardid:
+            value: 1
+        description: wallets id
+      - in: header
+        required: true
+        name: User-Id
+        schema:
+          type: string
+        examples:
+          user:
+            description: example user
+            value: 123
+      - in: header
+        required: true
+        name: Company-Id
+        schema:
+          type: string
+        examples:
+          company:
+            description: example company id
+            value: 456
+    get:
+      tags:
+        - Cards
+      summary: get user card by id
+      operationId: getUserCardById
+      responses:
+        200:
+          description: success
+        404:
+          description: not found
+  /cards/{id}/block:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: number
+          format: integer
+        description: wallets id
+        examples:
+          cardid:
+            value: 1
+      - in: header
+        required: true
+        name: User-Id
+        schema:
+          type: string
+        examples:
+          user:
+            description: example user
+            value: 123
+      - in: header
+        required: true
+        name: Company-Id
+        schema:
+          type: string
+        examples:
+          company:
+            description: example company id
+            value: 456
+    put:
+      tags:
+        - Cards
+      summary: block a card
+      operationId: blockUserCard
+      responses:
+        200:
+          description: successfully blocked a card
+        204:
+          description: card already blocked
+        400:
+          description: invalid request, no card found
+
+  /cards/{id}/unblock:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: number
+          format: integer
+        description: wallets id
+        examples:
+          cardid:
+            value: 1
+      - in: header
+        required: true
+        name: User-Id
+        schema:
+          type: string
+        examples:
+          user:
+            description: example user
+            value: 123
+      - in: header
+        required: true
+        name: Company-Id
+        schema:
+          type: string
+        examples:
+          company:
+            description: example company id
+            value: 456
+    put:
+      tags:
+        - Cards
+      summary: unblock a card
+      operationId: unblockUserId
+      responses:
+        200:
+          description: successfully blocked a card
+        204:
+          description: card already blocked
+        400:
+          description: invalid request, no card found
+
+  /transfers:
+    parameters:
+      - in: header
+        required: true
+        name: User-Id
+        schema:
+          type: string
+        examples:
+          user:
+            description: example user
+            value: 123
+      - in: header
+        required: true
+        name: Company-Id
+        schema:
+          type: string
+        examples:
+          company:
+            description: example company id
+            value: 456
+    post:
+      tags:
+        - Cards
+      summary: make a transfer
+      operationId: createATransfer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Transfer"
+            examples:
+              transfer1:
+                summary: transfer from an account to another
+                value:
+                  from: 3
+                  fromType: WALLET
+                  to: 11
+                  toType: CARD
+                  amount: 40
+      responses:
+        200:
+          description: transfer success!
+          content:
+            application/json:
+              examples:
+                successTransfer:
+                  summary: a success transfer
+                  value:
+                    amount: 40
+                    fromCurrency: EUR
+                    toCurrency: EUR
+                    from: 3
+                    to: 11
+                    timestamp: "2020-06-25T22:28:35.996Z"
+                    fromType: WALLET
+                    toType: CARD
+                    conversionFee: 1.16
+
+components:
+  schemas:
+    Wallet:
+      type: object
+      properties:
+        isMaster:
+          type: boolean
+        balance:
+          type: number
+          description: balance is a positive number and should be smaller than 2^31 / 100
+        currency:
+          type: string
+          enum: [EUR, GBP, USD]
+    Transfer:
+      type: object
+      properties:
+        amount:
+          type: number
+          description: amount is a positive number and should be smaller than 2^31 / 100
+        from:
+          type: number
+          format: integer
+        to:
+          type: number
+          format: integer
+        fromType:
+          type: string
+          enum: [WALLET, CARD]
+        toType:
+          type: string
+          enum: [WALLET, CARD]
