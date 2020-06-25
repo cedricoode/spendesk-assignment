@@ -13,7 +13,11 @@ const TransferRequestSchema = Joi.object({
   toType: Joi.string()
     .valid(...Object.values(PaymentType))
     .required(),
-  amount: Joi.number().min(0).required(),
+  amount: Joi.number()
+    .integer()
+    .min(0)
+    .max(2 ** 31 / 100)
+    .required(),
   // transferCurrency: Joi.string().valid('from', 'to').required(),
 });
 

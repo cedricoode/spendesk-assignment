@@ -31,6 +31,7 @@ class CardsController {
       logger.error('failed to create card');
       logger.error(err);
       ctx.status = 400;
+      ctx.body = err.message;
     }
   };
   get = async (ctx: Context) => {

@@ -1,15 +1,15 @@
 import Transfer from './Transfer';
-import { WalletOrCard } from './types';
+import { WalletOrCard, Money } from './types';
 
 class TransferFactory {
   static createTransfer(
     payer: WalletOrCard,
     payee: WalletOrCard,
-    fee: number,
-    amount: number
+    fee: Money,
+    amount: Money
   ) {
     const transfer = new Transfer();
-    transfer.amount = String(amount);
+    transfer.amount = amount.getAmount();
     transfer.fromCurrency = payer.currency;
     transfer.toCurrency = payee.currency;
     transfer.from = payer.balance;
@@ -17,7 +17,7 @@ class TransferFactory {
     transfer.timestamp = new Date();
     transfer.fromType = payer.type;
     transfer.toType = payee.type;
-    transfer.conversionFee = String(fee);
+    transfer.conversionFee = fee.getAmount();
     return transfer;
   }
 }

@@ -8,7 +8,7 @@ export class CardFactory {
   static createCardFromWallet(wallet: Wallet, user: User) {
     const card = new Card();
     const balance = new Balance();
-    balance.amount = '0';
+    balance.amount = 0;
     balance.currency = wallet.balance.currency;
     // card.balance = '0';
     card.blocked = false;

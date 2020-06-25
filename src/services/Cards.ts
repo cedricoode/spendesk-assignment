@@ -41,10 +41,9 @@ class CardsService {
       return false; // already blocked
     }
 
-    card.wallet.balance.amount =
-      '' + (Number(card.wallet.balance.amount) + Number(card.balance.amount)); // TODO: convert to decimal operation
+    card.addBalance(card.money);
     card.blocked = true;
-    card.amount = '0';
+    card.amount = 0;
     await this.cardsRepo.save(card);
     return true;
   }

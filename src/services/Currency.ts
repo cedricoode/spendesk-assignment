@@ -1,5 +1,5 @@
 import CurrencyExtrangeRepository from '../repositories/CurrencyExchange';
-import { Currencies } from '../entities/types';
+import { Currencies, Money } from '../entities/types';
 
 class CurrencyService {
   currencyRepo: CurrencyExtrangeRepository;
@@ -7,22 +7,23 @@ class CurrencyService {
     this.currencyRepo = new CurrencyExtrangeRepository();
   }
 
-  async convert(
-    fromCurrency: Currencies,
-    toCurrency: Currencies,
-    amount: string
-  ) {
+  async convert(fromMoney: Money, toCurrency: Currencies) {
     const currencyMap = await this.currencyRepo.getCurrenies();
-    if (
-      !(String(fromCurrency) in currencyMap) ||
-      !(String(toCurrency) in currencyMap)
-    ) {
-      throw new Error('unable to convert the currency');
+    if (!currencyMap) {
+      throw new Error('failed to get latest currency list');
     }
-    return (
-      (Number(amount) / currencyMap[String(fromCurrency)]) *
-      currencyMap[String(toCurrency)]
-    );
+    const from = currencyMap[fromMoney.getCurrency()];
+    const to = currencyMap[toCurrency];
+    if (!from || !to) {
+      throw new Error('currency not found');
+    }
+
+    return fromMoney.convert(toCurrency, {
+      endpoint: Promise.resolve({
+        rate: to / from,
+      }),
+      propertyPath: 'rate',
+    });
   }
 }
 

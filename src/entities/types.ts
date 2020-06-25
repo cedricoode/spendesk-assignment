@@ -26,3 +26,22 @@ export interface FixerIOResponse {
   date: string;
   rates: { [key: string]: number };
 }
+
+export type Money = Dinero.Dinero;
+
+export interface IBalance {
+  id: number;
+  currency: Currencies;
+  amount: number;
+  money: Money;
+  // type: PaymentType;
+  isEqual(payMethod: IBalance): boolean;
+  addBalance(money: Money): void;
+  takeBalance(money: Money): void;
+}
+
+export interface ICardWallet extends IBalance {
+  type: PaymentType;
+  isValid(): boolean;
+  isMasterWallet(): boolean;
+}

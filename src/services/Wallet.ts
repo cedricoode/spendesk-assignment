@@ -5,7 +5,7 @@ import Balance from '../entities/Balance';
 
 export interface WalletDto {
   currency: Currencies;
-  balance: string;
+  balance: number;
   isMaster: boolean;
   companyId?: string;
 }
@@ -18,10 +18,9 @@ export class WalletService {
   }
   createWallet(user: User, walletDto: WalletDto) {
     const wallet = new Wallet();
-    // wallet.currency = walletDto.currency;
     const balance = new Balance();
     balance.currency = walletDto.currency;
-    balance.amount = walletDto.balance;
+    balance.amount = walletDto.balance * 100;
     wallet.companyId = user.company;
     wallet.balance = balance;
     wallet.isMaster = walletDto.isMaster;

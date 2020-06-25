@@ -8,7 +8,11 @@ import { Currencies } from '../entities/types';
 const logger = createLogger('WalletsController');
 
 const CreateWalletSchema = Joi.object({
-  balance: Joi.number().integer().min(0).required(),
+  balance: Joi.number()
+    .integer()
+    .min(0)
+    .max(2 ** 31 / 100)
+    .required(),
   currency: Joi.string()
     .valid(...Object.values(Currencies))
     .required(),

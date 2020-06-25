@@ -9,15 +9,13 @@ const mockUser = {
 };
 const mockWalletDto = {
   currency: Currencies.EUR,
-  balance: '100',
+  balance: 1,
   isMaster: false,
 };
 const mockWallet = new Wallet();
 const balance = new Balance();
-balance.amount = '100';
+balance.amount = 100;
 balance.currency = Currencies.EUR;
-// mockWallet.balance = '100';
-// mockWallet.currency = Currencies.EUR;
 mockWallet.balance = balance;
 mockWallet.isMaster = false;
 mockWallet.id = 12;

@@ -1,7 +1,14 @@
 import Config from 'config';
+import Dinero from 'dinero.js';
 import CardsRepository from '../repositories/Cards';
 import WalletRepository from '../repositories/Wallet';
-import { PaymentType, User } from '../entities/types';
+import {
+  PaymentType,
+  User,
+  Currencies,
+  WalletOrCard,
+  Money,
+} from '../entities/types';
 import CurrencyService from './Currency';
 import { getManager } from 'typeorm';
 import TransferFactory from '../entities/TransferFactory';
@@ -13,7 +20,7 @@ interface TransferDto {
   to: number;
   fromType: PaymentType;
   toType: PaymentType;
-  amount: string;
+  amount: number;
 }
 class TransferService {
   cardRepo: CardsRepository;
@@ -59,54 +66,89 @@ class TransferService {
       throw new Error('payment method not found!');
     }
 
+    // expired or blocked
     if (!payee.isValid()) {
       throw new Error('payee method is invalid!');
     }
 
     // reject if two accounts are the same
-    if (payer.type === payee.type && payer.id === payee.id) {
+    if (payer.isEqual(payee)) {
       throw new Error('invalid transfer: from an account to the same account');
     }
 
-    // conversion
-    let fromAmount = Number(transferDto.amount);
-    let toAmount = Number(
-      await this.currencyService.convert(
-        payer.currency,
-        payee.currency,
-        transferDto.amount
-      )
+    const { fromMoney, toMoney, fee } = await this.getTransferAmounts(
+      transferDto.amount * 100,
+      payer.currency,
+      payee.currency
     );
 
     // check amount
-    if (Number(payer.amount) < fromAmount) {
+    if (payer.amount < fromMoney.getAmount()) {
       throw new Error('insufficient funds');
     }
 
-    // calculate fee
-    const fee = toAmount * FeeRate;
-    toAmount = toAmount - fee;
-
     // transfer
-    payer.amount = '' + (Number(payer.amount) - fromAmount);
-    payee.amount = '' + (Number(payee.amount) + toAmount);
-    const transfer = TransferFactory.createTransfer(
-      payer,
-      payee,
-      fee,
-      fromAmount
-    );
+    return this.performTransfer(payer, payee, fromMoney, toMoney, fee);
+  }
 
-    await getManager().transaction(async (entityManager) => {
-      await entityManager.save(transfer);
+  async getTransferMasterWallet(payer: WalletOrCard, payee: WalletOrCard) {
+    if (payer.isMasterWallet() && payer.currency === payee.currency) {
+      return payer;
+    } else if (payee.isMasterWallet()) {
+      return payee;
+    }
+    return await this.walletRepo.findMasterWallet(payee.currency);
+  }
 
-      const masterWallet = await this.walletRepo.findMasterWallet(
-        payee.currency
+  performTransfer(
+    payer: WalletOrCard,
+    payee: WalletOrCard,
+    fromMoney: Money,
+    toMoney: Money,
+    fee: Money
+  ) {
+    return getManager().transaction(async (entityManager) => {
+      payer.takeBalance(fromMoney);
+      payee.addBalance(toMoney);
+      const transfer = TransferFactory.createTransfer(
+        payer,
+        payee,
+        fee,
+        fromMoney
       );
-      masterWallet.amount = '' + (Number(masterWallet.amount) + fee);
-      await entityManager.save(masterWallet);
+
+      const masterWallet = await this.getTransferMasterWallet(payer, payee);
+      masterWallet.addBalance(fee);
+      const balances = [payer.balance, payee.balance];
+      if (!masterWallet.isEqual(payee) && !masterWallet.isEqual(payer)) {
+        balances.push(masterWallet.balance);
+      }
+      await Promise.all(balances.map((balance) => entityManager.save(balance)));
+      return transfer;
     });
-    return transfer;
+  }
+
+  async getTransferAmounts(
+    amount: number,
+    fromCurrency: Currencies,
+    toCurrency: Currencies
+  ) {
+    const fromMoney = Dinero({
+      amount: amount,
+      currency: fromCurrency,
+    });
+
+    // conversion
+    let toMoney = await this.currencyService.convert(fromMoney, toCurrency);
+
+    // calculate fee
+    const fee = toMoney.multiply(FeeRate); // toAmount * FeeRate;
+    toMoney = toMoney.subtract(fee);
+    return {
+      fromMoney,
+      toMoney,
+      fee,
+    };
   }
 }
 

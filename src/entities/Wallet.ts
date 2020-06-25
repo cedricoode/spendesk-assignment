@@ -6,41 +6,15 @@ import {
   OneToOne,
   JoinColumn,
 } from 'typeorm';
+import Dinero from 'dinero.js';
 import Card from './Card';
-// import { Currencies } from './types';
 import Balance from './Balance';
-import { Currencies, PaymentType } from './types';
+import { Currencies, PaymentType, ICardWallet, Money } from './types';
 
 @Entity('wallets')
-class Wallet {
+class Wallet implements ICardWallet {
   @PrimaryGeneratedColumn()
   id: number;
-
-  // @Column({ type: 'enum', enum: Object.values(Currencies) })
-  // currency: Currencies;
-  get currency() {
-    return this.balance.currency;
-  }
-
-  set currency(currency: Currencies) {
-    this.balance.currency = currency;
-  }
-
-  get amount() {
-    return this.balance.amount;
-  }
-
-  set amount(amount: string) {
-    this.balance.amount = amount;
-  }
-
-  get type() {
-    return PaymentType.WALLET;
-  }
-
-  isValid() {
-    return true;
-  }
 
   @OneToOne(() => Balance, { cascade: ['insert', 'update', 'remove'] })
   @JoinColumn({ name: 'balance_id' })
@@ -54,6 +28,54 @@ class Wallet {
 
   @OneToMany(() => Card, (card) => card.wallet)
   cards: Card[];
+
+  get currency() {
+    return this.balance.currency;
+  }
+
+  set currency(currency: Currencies) {
+    this.balance.currency = currency;
+  }
+
+  get amount() {
+    return this.balance.amount;
+  }
+
+  set amount(amount: number) {
+    this.balance.amount = amount;
+  }
+
+  get money() {
+    return this.balance.money;
+  }
+
+  set money(m: Money) {
+    this.balance.money = Dinero(m.toJSON());
+  }
+
+  get type() {
+    return PaymentType.WALLET;
+  }
+
+  isValid() {
+    return true;
+  }
+
+  addBalance(money: Money) {
+    this.money = this.money.add(money);
+  }
+
+  takeBalance(money: Money) {
+    this.money = this.money.subtract(money);
+  }
+
+  isEqual(payMethod: ICardWallet) {
+    return this.type === payMethod.type && this.id === payMethod.id;
+  }
+
+  isMasterWallet() {
+    return this.isMaster;
+  }
 }
 
 export default Wallet;

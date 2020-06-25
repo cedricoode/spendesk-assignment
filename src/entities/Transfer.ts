@@ -16,8 +16,8 @@ class Transfer {
   @Column('timestamp')
   timestamp: Date;
 
-  @Column('decimal', { precision: 16, scale: 2 })
-  amount: string;
+  @Column('integer')
+  amount: Number;
 
   @Column({ name: 'from_currency', type: 'enum', enum: Currencies })
   fromCurrency: Currencies;
@@ -25,8 +25,8 @@ class Transfer {
   @Column({ name: 'to_currency', type: 'enum', enum: Currencies })
   toCurrency: Currencies;
 
-  @Column('decimal', { precision: 16, scale: 2 })
-  conversionFee: string;
+  @Column('integer')
+  conversionFee: number;
 
   @ManyToOne((type) => Balance, { cascade: ['insert', 'update'] })
   @JoinColumn()
