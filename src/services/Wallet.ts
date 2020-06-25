@@ -24,11 +24,13 @@ export class WalletService {
     wallet.companyId = user.company;
     wallet.balance = balance;
     wallet.isMaster = walletDto.isMaster;
-    const masterWallet = await this.walletRepo.findMasterWallet(
-      wallet.currency
-    );
-    if (masterWallet) {
-      throw new Error(`master wallet(${wallet.currency}) already exists!`);
+    if (wallet.isMaster) {
+      const masterWallet = await this.walletRepo.findMasterWallet(
+        wallet.currency
+      );
+      if (masterWallet) {
+        throw new Error(`master wallet(${wallet.currency}) already exists!`);
+      }
     }
 
     return this.walletRepo.create(wallet);
