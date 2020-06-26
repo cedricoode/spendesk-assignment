@@ -41,15 +41,16 @@ class TransferService {
       transferDto.fromType,
       transferDto.from
     );
+
+    if (!payer) {
+      throw new Error('payment method not found!');
+    }
+
     if (
       !(payer instanceof Wallet && payer.companyId === user.company) &&
       !(payer instanceof Card && payer.userId === user.id)
     ) {
       throw new Error('not allowed');
-    }
-
-    if (!payer) {
-      throw new Error('payment method not found!');
     }
 
     // expired or blocked

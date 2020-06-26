@@ -42,7 +42,7 @@ export class WalletService {
 
   async getCompanyWallet(companyId: string, id: number) {
     const wallet = await this.walletRepo.findById(id);
-    return wallet.companyId === companyId ? wallet : null;
+    return wallet && wallet.companyId === companyId ? wallet : null;
   }
 }
 
