@@ -36,8 +36,8 @@ class TransferController {
     }
     const { user } = ctx.state;
     try {
-      const rslt = await this.transferService.create(user, value);
       ctx.status = 200;
+      const rslt = await this.transferService.create(user, value);
       const body = dtoTransformer(rslt, TransferToDTO);
       body.from = value.from;
       body.to = value.to;
@@ -47,7 +47,8 @@ class TransferController {
         /insufficient fund/.test(err.message) ||
         /method not found/.test(err.message) ||
         /method is invalid/.test(err.message) ||
-        /invalid transfer/.test(err.message)
+        /invalid transfer/.test(err.message) ||
+        /not allowed/.test(err.message)
       ) {
         ctx.status = 400;
         ctx.body = err.message;

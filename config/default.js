@@ -1,5 +1,7 @@
-import path from 'path';
-export default {
+/*eslint-disable*/
+const path = require('path');
+
+module.exports = {
   typeorm: {
     default: {
       type: 'postgres',
@@ -30,5 +32,8 @@ export default {
   },
   spendesk: {
     transferFeeRate: 0.029,
+  },
+  fixerio: {
+    accessKey: '',
   },
 };

@@ -12,8 +12,6 @@ COPY . .
 
 RUN npm run build
 
-WORKDIR /usr/src/app/build
-
 EXPOSE 4000
 
-CMD ["node", "src"]
+CMD ["node", "build"]

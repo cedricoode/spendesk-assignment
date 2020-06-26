@@ -31,13 +31,8 @@ class WalletRepository {
     });
   }
 
-  findById(companyId: string, id: number) {
-    return this.walletRepo
-      .find({
-        relations: ['balance'],
-        where: { companyId, id },
-      })
-      .then((wallets) => (wallets.length > 0 ? wallets[0] : null));
+  findById(id: number) {
+    return this.walletRepo.findOne(id, { relations: ['balance'] });
   }
 
   findMasterWallet(currency: string) {

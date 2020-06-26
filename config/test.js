@@ -1,5 +1,6 @@
-import path from 'path';
-export default {
+/*eslint-disable*/
+const path = require('path')
+module.exports = {
   typeorm: {
     default: {
       type: 'postgres',

@@ -24,13 +24,8 @@ class CardsRepository {
     return this.cardRepo.save(card);
   }
 
-  findById(userId: string, cardId: number) {
-    return this.cardRepo
-      .find({
-        relations: ['wallet', 'balance'],
-        where: { userId, id: cardId },
-      })
-      .then((cards) => (cards.length > 0 ? cards[0] : null));
+  findById(cardId: number) {
+    return this.cardRepo.findOne(cardId, { relations: ['wallet', 'balance'] });
   }
 
   findByUserId(userId: string) {

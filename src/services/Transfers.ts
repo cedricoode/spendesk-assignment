@@ -12,6 +12,8 @@ import {
 import CurrencyService from './Currency';
 import { getManager } from 'typeorm';
 import TransferFactory from '../entities/TransferFactory';
+import Wallet from '../entities/Wallet';
+import Card from '../entities/Card';
 
 const FeeRate: number = Config.get('spendesk.transferFeeRate') || 0;
 
@@ -36,10 +38,16 @@ class TransferService {
   async create(user: User, transferDto: TransferDto) {
     // check payer type
     let payer = await this.getPaymentMethod(
-      user,
       transferDto.fromType,
       transferDto.from
     );
+    if (
+      !(payer instanceof Wallet && payer.companyId === user.company) &&
+      !(payer instanceof Card && payer.userId === user.id)
+    ) {
+      throw new Error('not allowed');
+    }
+
     if (!payer) {
       throw new Error('payment method not found!');
     }
@@ -50,11 +58,7 @@ class TransferService {
     }
 
     // check payee type
-    let payee = await this.getPaymentMethod(
-      user,
-      transferDto.toType,
-      transferDto.to
-    );
+    let payee = await this.getPaymentMethod(transferDto.toType, transferDto.to);
     if (!payee) {
       throw new Error('payment method not found!');
     }
@@ -84,11 +88,11 @@ class TransferService {
     return this.performTransfer(payer, payee, fromMoney, toMoney, fee);
   }
 
-  async getPaymentMethod(user: User, type: PaymentType, id: number) {
+  async getPaymentMethod(type: PaymentType, id: number) {
     if (type === PaymentType.CARD) {
-      return this.cardRepo.findById(user.id, id);
+      return this.cardRepo.findById(id);
     } else {
-      return this.walletRepo.findById(user.company, id);
+      return this.walletRepo.findById(id);
     }
   }
 

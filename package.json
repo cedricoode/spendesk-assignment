@@ -8,7 +8,7 @@
     "test:e2e": "NODE_ENV=test && jest -c jest.config.json --rootDir e2e",
     "dev": "nodemon --config nodemon.json",
     "start": "ts-node src/index.ts",
-    "build": "rimraf build && tsc && ncp public build/public "
+    "build": "rimraf build && tsc"
   },
   "keywords": [],
   "author": "cedricoode",
@@ -43,7 +43,7 @@
     "@types/koa-static": "^4.0.1",
     "@types/koa__router": "^8.0.2",
     "@types/lodash": "^4.14.150",
-    "@types/node": "^8.0.29",
+    "@types/node": "^14.0.14",
     "@types/supertest": "^2.0.9",
     "@typescript-eslint/eslint-plugin": "^2.31.0",
     "@typescript-eslint/parser": "^2.31.0",
@@ -58,6 +58,6 @@
     "supertest": "^4.0.2",
     "ts-jest": "^25.5.0",
     "ts-node": "3.3.0",
-    "typescript": "^3.8.3"
+    "typescript": "^3.9.5"
   }
 }

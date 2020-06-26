@@ -54,7 +54,6 @@ describe('TransferService', () => {
     it('should return card if card type is required', async () => {
       const transferService = new TransferService();
       const card = await transferService.getPaymentMethod(
-        mockUser,
         PaymentType.CARD,
         mockCard.id
       );
@@ -63,7 +62,6 @@ describe('TransferService', () => {
     it('should return card if wallet type is required', async () => {
       const transferService = new TransferService();
       const wallet = await transferService.getPaymentMethod(
-        mockUser,
         PaymentType.WALLET,
         mockWallet.id
       );

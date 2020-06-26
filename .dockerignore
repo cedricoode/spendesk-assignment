@@ -4,3 +4,4 @@ e2e
 yarn-error.log
 scripts
 fixtures
+/config/local*

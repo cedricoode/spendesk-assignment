@@ -40,8 +40,9 @@ export class WalletService {
     return this.walletRepo.findByCompanyId(companyId);
   }
 
-  getCompanyWallet(companyId: string, id: number) {
-    return this.walletRepo.findById(companyId, id);
+  async getCompanyWallet(companyId: string, id: number) {
+    const wallet = await this.walletRepo.findById(id);
+    return wallet.companyId === companyId ? wallet : null;
   }
 }
 

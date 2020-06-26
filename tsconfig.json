@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
-    "lib": ["es5", "es6"],
-    "target": "es5",
+    "lib": ["ESNext"],
+    "target": "es2019",
     "module": "commonjs",
     "moduleResolution": "node",
     "outDir": "./build",
@@ -15,7 +15,7 @@
     "typeRoots": ["./src/@types/**/*", "node_modules/@types"],
     "baseUrl": ".",
     "paths": {
-      "object-mapper": ["./src/@types/object-mapper/index.d.ts"]
+      "object-mapper": ["src/@types/object-mapper/index.d.ts"]
     }
   },
   "exclude": ["node_modules", "build"],

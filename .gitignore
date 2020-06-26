@@ -7,5 +7,5 @@ tmp/
 temp/
 *.pdf
 fixtures
-config/local-*.ts
+config/local-*.js
 coverage/

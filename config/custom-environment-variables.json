@@ -1,1 +1,10 @@
-{}
+{
+  "typeorm": {
+    "default": {
+      "password": "DB_PASSWORD",
+      "database": "DB_NAME",
+      "username": "DB_USER",
+      "host": "DB_HOST"
+    }
+  }
+}

@@ -25,7 +25,11 @@ class CardsService {
   }
 
   async getUserCard(user: User, cardId: number) {
-    return this.cardsRepo.findById(user.id, cardId);
+    const card = await this.cardsRepo.findById(cardId);
+    if (card && card.userId === user.id) {
+      return card;
+    }
+    return null;
   }
 
   async getUserCards(user: User) {
@@ -33,8 +37,8 @@ class CardsService {
   }
 
   async blockCard(user: User, cardId: number) {
-    const card = await this.cardsRepo.findById(user.id, cardId);
-    if (!card) {
+    const card = await this.cardsRepo.findById(cardId);
+    if (!card || card.userId !== user.id) {
       throw new Error('card not found');
     }
     if (card.blocked) {
@@ -49,8 +53,8 @@ class CardsService {
   }
 
   async unblockCard(user: User, cardId: number) {
-    const card = await this.cardsRepo.findById(user.id, cardId);
-    if (!card) {
+    const card = await this.cardsRepo.findById(cardId);
+    if (!card || card.userId !== user.id) {
       throw new Error('card not found');
     }
 
